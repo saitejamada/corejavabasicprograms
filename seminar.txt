@@ -1,0 +1,366 @@
+Adapter pattern
+
+defination
+
+An Adapter Pattern says that just "converts the interface of a class into another interface that a client wants".
+
+Advantages 
+
+Helps achieve reusability and flexibility.
+Client class is not complicated by having to use a different interface and can use polymorphism to swap between different 
+implementations of adapters.
+
+eg
+
+// Java implementation of Adapter pattern
+
+interface Bird
+{
+  // birds implement Bird interface that allows
+  // them to fly and make sounds adaptee interface
+  public void fly();
+  public void makeSound();
+}
+
+class Sparrow implements Bird
+{
+  // a concrete implementation of bird
+  public void fly()
+  {
+    System.out.println("Flying");
+  }
+  public void makeSound()
+  {
+    System.out.println("Chirp Chirp");
+  }
+}
+
+interface ToyDuck
+{
+  // target interface
+  // toyducks dont fly they just make
+  // squeaking sound
+  public void squeak();
+}
+
+class PlasticToyDuck implements ToyDuck
+{
+  public void squeak()
+  {
+    System.out.println("Squeak");
+  }
+}
+
+class BirdAdapter implements ToyDuck
+{
+  // You need to implement the interface your
+  // client expects to use.
+  Bird bird;
+  public BirdAdapter(Bird bird)
+  {
+    // we need reference to the object we
+    // are adapting
+    this.bird = bird;
+  }
+
+  public void squeak()
+  {
+    // translate the methods appropriately
+    bird.makeSound();
+  }
+}
+
+class Main
+{
+  public static void main(String args[])
+  {
+    Sparrow sparrow = new Sparrow();
+    ToyDuck toyDuck = new PlasticToyDuck();
+
+    // Wrap a bird in a birdAdapter so that it
+    // behaves like toy duck
+    ToyDuck birdAdapter = new BirdAdapter(sparrow);
+
+    System.out.println("Sparrow...");
+    sparrow.fly();
+    sparrow.makeSound();
+
+    System.out.println("ToyDuck...");
+    toyDuck.squeak();
+
+    // toy duck behaving like a bird
+    System.out.println("BirdAdapter...");
+    birdAdapter.squeak();
+  }
+}
+
+output==>
+
+Sparrow...
+Flying
+Chirp Chirp
+ToyDuck...
+Squeak
+BirdAdapter...
+Chirp Chirp
+
+
+Bridge Design Pattern
+
+The Bridge design pattern allows you to separate the abstraction from the implementation. It is a structural design pattern. 
+
+def ==> A Bridge Pattern says that just "decouple the functional abstraction from the implementation so that the two can vary 
+	independently".
+
+Usage of Bridge Pattern
+
+When you don't want a permanent binding between the functional abstraction and its implementation.
+When both the functional abstraction and its implementation need to extended using sub-classes.
+It is mostly used in those places where changes are made in the implementation does not affect the clients.
+
+Advantage of Bridge Pattern
+
+It enables the separation of implementation from the interface.
+It improves the extensibility.
+It allows the hiding of implementation details from the client.
+
+When we need bridge design pattern
+
+The Bridge pattern is an application of the old advice, “prefer composition over inheritance”. 
+It becomes handy when you must subclass different times in ways that are orthogonal with one another.
+
+eg
+
+// Java code to demonstrate
+// bridge design pattern
+
+// abstraction in bridge pattern
+abstract class Vehicle {
+  protected Workshop workShop1;
+  protected Workshop workShop2;
+
+  protected Vehicle(Workshop workShop1, Workshop workShop2)
+  {
+    this.workShop1 = workShop1;
+    this.workShop2 = workShop2;
+  }
+
+  abstract public void manufacture();
+}
+
+// Refine abstraction 1 in bridge pattern
+class Car extends Vehicle {
+  public Car(Workshop workShop1, Workshop workShop2)
+  {
+    super(workShop1, workShop2);
+  }
+
+  @Override
+  public void manufacture()
+  {
+    System.out.print("Car ");
+    workShop1.work();
+    workShop2.work();
+  }
+}
+
+// Refine abstraction 2 in bridge pattern
+class Bike extends Vehicle {
+  public Bike(Workshop workShop1, Workshop workShop2)
+  {
+    super(workShop1, workShop2);
+  }
+
+  @Override
+  public void manufacture()
+  {
+    System.out.print("Bike ");
+    workShop1.work();
+    workShop2.work();
+  }
+}
+
+// Implementor for bridge pattern
+interface Workshop
+{
+  abstract public void work();
+}
+
+// Concrete implementation 1 for bridge pattern
+class Produce implements Workshop {
+  @Override
+  public void work()
+  {
+    System.out.print("Produced");
+  }
+}
+
+// Concrete implementation 2 for bridge pattern
+class Assemble implements Workshop {
+  @Override
+  public void work()
+  {
+    System.out.print(" And");
+    System.out.println(" Assembled.");
+  }
+}
+
+// Demonstration of bridge design pattern
+class BridgePattern {
+  public static void main(String[] args)
+  {
+    Vehicle vehicle1 = new Car(new Produce(), new Assemble());
+    vehicle1.manufacture();
+    Vehicle vehicle2 = new Bike(new Produce(), new Assemble());
+    vehicle2.manufacture();
+  }
+}
+
+output=>
+
+Car Produced And Assembled.
+Bike Produced And Assembled.
+
+
+Composite pattern
+
+Composite Pattern
+
+A Composite Pattern says that just "allow clients to operate in generic manner on objects that may or may not represent
+ a hierarchy of objects".
+
+Advantage of Composite Design Pattern
+
+It defines class hierarchies that contain primitive and complex objects.
+It makes easier to you to add new kinds of components.
+It provides flexibility of structure with manageable class or interface.
+consumer recieves the group of objects as a single object 
+
+Usage of Composite Pattern
+It is used:
+
+When you want to represent a full or partial hierarchy of objects.
+When the responsibilities are needed to be added dynamically to the individual objects without affecting other objects. 
+Where the responsibility of object may vary from time to time.	
+
+
+Real Life example
+
+In an organization, It have general managers and under general managers, there can be managers and under managers there can be developers. Now you can set a tree structure and ask each node to perform common operation like getSalary().
+Composite design pattern treats each node in two ways:
+1) Composite – Composite means it can have other objects below it.
+2) leaf – leaf means it has no objects below it.
+
+
+// A Java program to demonstrate working of
+// Composite Design Pattern with example
+// of a company with different
+// employee details
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+// A common interface for all employee
+interface Employee
+{
+  public void showEmployeeDetails();
+}
+
+class Developer implements Employee
+{
+  private String name;
+  private long empId;
+  private String position;
+  
+  public Developer(long empId, String name, String position)
+  {
+    // Assign the Employee id,
+    // name and the position
+    this.empId = empId;
+    this.name = name;
+    this.position = position;
+  }
+  
+  @Override
+  public void showEmployeeDetails()
+  {
+    System.out.println(empId+" " +name+ " " + position );
+  }
+}
+
+class Manager implements Employee
+{
+  private String name;
+  private long empId;
+  private String position;
+
+  public Manager(long empId, String name, String position)
+  {
+    this.empId = empId;
+    this.name = name;
+    this.position = position;
+  }
+  
+  @Override
+  public void showEmployeeDetails()
+  {
+    System.out.println(empId+" " +name+ " " + position );
+  }
+}
+
+
+// Class used to get Employee List
+// and do the opertions like
+// add or remove Employee
+
+class CompanyDirectory implements Employee
+{
+  private List<Employee> employeeList = new ArrayList<Employee>();
+    
+  @Override
+  public void showEmployeeDetails()
+  {
+    for(Employee emp:employeeList)
+    {
+      emp.showEmployeeDetails();
+    }
+  }
+    
+  public void addEmployee(Employee emp)
+  {
+    employeeList.add(emp);
+  }
+    
+  public void removeEmployee(Employee emp)
+  {
+    employeeList.remove(emp);
+  }
+}
+
+// Driver class
+public class Company
+{
+  public static void main (String[] args)
+  {
+    Developer dev1 = new Developer(100, "Lokesh Sharma", "Pro Developer");
+    Developer dev2 = new Developer(101, "Vinay Sharma", "Developer");
+    CompanyDirectory engDirectory = new CompanyDirectory();
+    engDirectory.addEmployee(dev1);
+    engDirectory.addEmployee(dev2);
+    
+    Manager man1 = new Manager(200, "Kushagra Garg", "SEO Manager");
+    Manager man2 = new Manager(201, "Vikram Sharma ", "Kushagra's Manager");
+    
+    CompanyDirectory accDirectory = new CompanyDirectory();
+    accDirectory.addEmployee(man1);
+    accDirectory.addEmployee(man2);
+  
+    CompanyDirectory directory = new CompanyDirectory();
+    directory.addEmployee(engDirectory);
+    directory.addEmployee(accDirectory);
+    directory.showEmployeeDetails();
+  }
+}
+
+
